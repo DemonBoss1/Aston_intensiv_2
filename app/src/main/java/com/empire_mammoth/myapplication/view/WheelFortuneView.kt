@@ -36,6 +36,7 @@ class WheelFortuneView(
 
     private var isScroll = false
     private var indexScroll = 0
+    private val numberScrollingFrames =100
 
     private var currentSector = 3
 
@@ -54,13 +55,25 @@ class WheelFortuneView(
         drawIndicator(canvas)
         drawCenter(canvas)
 
-        if (isScroll) {
-            startAngle += scrollAngle
-            indexScroll++
-            if (indexScroll > 99) isScroll = false
-            invalidate()
-        }
+        scrollContinue()
+    }
 
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                if (!isScroll) {
+                    paintButton.color = Color.LTGRAY
+                    startScroll()
+                    invalidate()
+                }
+            }
+
+            MotionEvent.ACTION_UP -> {
+                paintButton.color = Color.GRAY
+                invalidate()
+            }
+        }
+        return true
     }
 
     private fun drawCenter(canvas: Canvas) {
@@ -123,27 +136,20 @@ class WheelFortuneView(
         return bitmap
     }
 
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                if (!isScroll) {
-                    paintButton.color = Color.LTGRAY
-                    val randomVar = (1..colors.size).random()
-                    Log.e("ACTION_DOWN", randomVar.toString())
-                    currentSector = (currentSector - randomVar + colors.size) % colors.size
-                    Log.e("ACTION_DOWN", currentSector.toString())
-                    scrollAngle = (360 + randomVar * angle) / 100
-                    isScroll = true
-                    indexScroll = 0
-                    invalidate()
-                }
-            }
+    private fun startScroll() {
+        val randomVar = (1..colors.size).random()
+        currentSector = (currentSector - randomVar + colors.size) % colors.size
+        scrollAngle = (360 + randomVar * angle) / numberScrollingFrames
+        isScroll = true
+        indexScroll = 0
+    }
 
-            MotionEvent.ACTION_UP -> {
-                paintButton.color = Color.GRAY
-                invalidate()
-            }
+    private fun scrollContinue(){
+        if (isScroll) {
+            startAngle += scrollAngle
+            indexScroll++
+            if (indexScroll >= numberScrollingFrames) isScroll = false
+            invalidate()
         }
-        return true
     }
 }

@@ -58,9 +58,11 @@ class TextCustomView(
         val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
         val currentDate = sdf.format(Date())
         text = currentDate.toString()
+        invalidate()
     }
 
     public fun clearText() {
         text = ""
+        invalidate()
     }
 }

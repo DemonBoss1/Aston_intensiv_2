@@ -17,6 +17,7 @@ class WheelFortuneView(
     context: Context,
     attributeSet: AttributeSet
 ) : View(context, attributeSet) {
+    public var listener: Listener? = null
     private val paint = Paint()
     private val paintBorder = Paint()
     private val paintButton = Paint()
@@ -38,7 +39,7 @@ class WheelFortuneView(
 
     private var isScroll = false
     private var indexScroll = 0
-    private val numberScrollingFrames =100
+    private val numberScrollingFrames = 100
 
     private var currentSector = 3
 
@@ -90,7 +91,7 @@ class WheelFortuneView(
         val radius = width.coerceAtMost(height) / 6f
         val text = "Start"
         val rect = Rect()
-        paintText.textSize = radius/4
+        paintText.textSize = radius / 4
         paintText.getTextBounds(text, 0, text.length, rect)
 
         canvas.drawCircle(centerX, centerY, radius, paintButton)
@@ -163,12 +164,19 @@ class WheelFortuneView(
         indexScroll = 0
     }
 
-    private fun scrollContinue(){
+    private fun scrollContinue() {
         if (isScroll) {
             startAngle += scrollAngle
             indexScroll++
-            if (indexScroll >= numberScrollingFrames) isScroll = false
+            if (indexScroll >= numberScrollingFrames){
+                isScroll = false
+                listener?.processingResults(currentSector)
+            }
             invalidate()
         }
+    }
+
+    interface Listener {
+        fun processingResults(result: Int)
     }
 }

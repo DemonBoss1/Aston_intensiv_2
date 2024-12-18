@@ -6,12 +6,14 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
+import android.os.Bundle
+import android.os.Parcelable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.empire_mammoth.myapplication.R
+
 
 class WheelFortuneView(
     context: Context,
@@ -84,6 +86,34 @@ class WheelFortuneView(
             }
         }
         return true
+    }
+
+    override fun onSaveInstanceState(): Parcelable {
+        val bundle = Bundle()
+        bundle.putParcelable("superState", super.onSaveInstanceState())
+        bundle.putFloat("startAngle",startAngle)
+        bundle.putFloat("scrollAngle",scrollAngle)
+        bundle.putBoolean("isScroll",isScroll)
+        bundle.putInt("indexScroll",indexScroll)
+        bundle.putInt("currentSector",currentSector)
+        return bundle
+    }
+
+    override fun onRestoreInstanceState(parcelable: Parcelable?) {
+        var state: Parcelable? = parcelable
+        if (parcelable is Bundle)  // implicit null check
+        {
+            val bundle = parcelable
+            startAngle = bundle.getFloat("startAngle")
+            scrollAngle = bundle.getFloat("scrollAngle")
+            isScroll = bundle.getBoolean("isScroll")
+            indexScroll = bundle.getInt("indexScroll")
+            currentSector = bundle.getInt("currentSector")
+            state = bundle.getParcelable<Parcelable>("superState")
+
+            if(isScroll) listener?.onStart()
+        }
+        super.onRestoreInstanceState(state)
     }
 
     private fun drawCenter(canvas: Canvas) {

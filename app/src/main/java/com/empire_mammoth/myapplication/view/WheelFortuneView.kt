@@ -73,6 +73,7 @@ class WheelFortuneView(
                 if (!isScroll) {
                     paintButton.color = Color.LTGRAY
                     startScroll()
+                    listener?.onStart()
                     invalidate()
                 }
             }
@@ -177,6 +178,7 @@ class WheelFortuneView(
     }
 
     interface Listener {
+        fun onStart()
         fun processingResults(result: Int)
     }
 }

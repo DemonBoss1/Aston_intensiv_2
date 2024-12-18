@@ -19,9 +19,14 @@ class TextCustomView(
     context: Context,
     attributeSet: AttributeSet
 ) : View(context, attributeSet) {
+    private val paintBorder = Paint()
     private val paintText = Paint()
+    private var text = ""
 
     init {
+        paintBorder.style = Paint.Style.STROKE
+        paintBorder.color = Color.BLACK
+
         paintText.style = Paint.Style.FILL
         paintText.color = Color.BLACK
     }
@@ -35,18 +40,27 @@ class TextCustomView(
     private fun drawCenter(canvas: Canvas) {
         val centerX = width / 2f
         val centerY = height / 2f
-        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-        val currentDate = sdf.format(Date())
-        val text = currentDate.toString()
+        //getDate()
         val rect = Rect()
-        paintText.textSize = width.coerceAtMost(height) / 4f
+        paintText.textSize = width.coerceAtMost(height) / 8f
         paintText.getTextBounds(text, 0, text.length, rect)
 
+        canvas.drawRect(0f, 0f, width - 1f, height- 1f, paintBorder)
         canvas.drawText(
             text,
             centerX - rect.exactCenterX(),
             centerY - rect.exactCenterY(),
             paintText
         )
+    }
+
+    public fun getDate() {
+        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+        val currentDate = sdf.format(Date())
+        text = currentDate.toString()
+    }
+
+    public fun clearText() {
+        text = ""
     }
 }

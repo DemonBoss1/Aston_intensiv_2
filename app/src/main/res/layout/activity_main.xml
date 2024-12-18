@@ -25,6 +25,7 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <com.empire_mammoth.myapplication.view.TextCustomView
+        android:id="@+id/text_custom_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="10dp"

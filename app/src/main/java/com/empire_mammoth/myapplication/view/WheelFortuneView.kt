@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
@@ -19,6 +20,7 @@ class WheelFortuneView(
     private val paint = Paint()
     private val paintBorder = Paint()
     private val paintButton = Paint()
+    private val paintText = Paint()
 
     private val colors = listOf(
         Color.RED,
@@ -42,10 +44,16 @@ class WheelFortuneView(
 
     init {
         paint.style = Paint.Style.FILL
+
         paintButton.style = Paint.Style.FILL
         paintButton.color = Color.GRAY
+
         paintBorder.style = Paint.Style.STROKE
         paintBorder.color = Color.BLACK
+
+        paintText.style = Paint.Style.FILL
+        paintText.color = Color.BLACK
+
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -80,8 +88,19 @@ class WheelFortuneView(
         val centerX = width / 2f
         val centerY = height / 2f
         val radius = width.coerceAtMost(height) / 6f
+        val text = "Start"
+        val rect = Rect()
+        paintText.textSize = radius/4
+        paintText.getTextBounds(text, 0, text.length, rect)
+
         canvas.drawCircle(centerX, centerY, radius, paintButton)
         canvas.drawCircle(centerX, centerY, radius, paintBorder)
+        canvas.drawText(
+            text,
+            centerX - rect.exactCenterX(),
+            centerY - rect.exactCenterY(),
+            paintText
+        )
     }
 
     private fun drawWheelDrum(canvas: Canvas) {
@@ -139,7 +158,7 @@ class WheelFortuneView(
     private fun startScroll() {
         val randomVar = (1..colors.size).random()
         currentSector = (currentSector - randomVar + colors.size) % colors.size
-        scrollAngle = (360 + randomVar * angle) / numberScrollingFrames
+        scrollAngle = (720 + randomVar * angle) / numberScrollingFrames
         isScroll = true
         indexScroll = 0
     }

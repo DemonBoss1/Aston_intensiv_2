@@ -1,17 +1,15 @@
 package com.empire_mammoth.myapplication
 
-import android.media.MediaPlayer.OnSeekCompleteListener
+import android.graphics.Color
+import android.icu.text.SimpleDateFormat
 import android.os.Bundle
-import android.renderscript.ScriptGroup.Binding
 import android.view.View
 import android.widget.SeekBar
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.empire_mammoth.myapplication.databinding.ActivityMainBinding
 import com.empire_mammoth.myapplication.view.WheelFortuneView
 import com.squareup.picasso.Picasso
+import java.util.Date
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -25,16 +23,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.apply {
-            wheelFortuneView.listener = object : WheelFortuneView.Listener {
-                var isUse = true
-                override fun onStart() {
-                    if (isUse) {
+            wheelFortuneView.listener = object : WheelFortuneView.RollListener {
+                var isUseImage = true
+                override fun onStartRoll() {
+                    if (isUseImage) {
                         Picasso.get()
                             .load("https://placebeard.it/$width" + "x$height")
                             .into(imageView)
                         width += 16
                         height += 9
-                        isUse = false
+                        isUseImage = false
                     }
 
                     textCustomView.clearText()
@@ -44,12 +42,12 @@ class MainActivity : AppCompatActivity() {
 
                 override fun processingResults(result: Int) {
                     when (result % 2) {
-                        0 -> {
-                            textCustomView.getDate()
+                        Color.RED, Color.YELLOW, Color.CYAN, 0xFF8b00ff.toInt() -> {
+                            val text = getDate()
+                            textCustomView.setText(text)
                         }
-
-                        1 -> {
-                            isUse = true
+                        0xFFFFA500.toInt(), Color.GREEN, Color.BLUE -> {
+                            isUseImage = true
 
                             textCustomView.visibility = View.GONE
                             imageView.visibility = View.VISIBLE
@@ -78,5 +76,11 @@ class MainActivity : AppCompatActivity() {
 
             })
         }
+    }
+
+    private fun getDate(): String {
+        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+        val currentDate = sdf.format(Date())
+        return currentDate.toString()
     }
 }

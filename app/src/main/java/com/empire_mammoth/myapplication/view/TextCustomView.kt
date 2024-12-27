@@ -1,19 +1,12 @@
 package com.empire_mammoth.myapplication.view
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
-import android.icu.text.SimpleDateFormat
 import android.util.AttributeSet
-import android.util.Log
-import android.view.MotionEvent
 import android.view.View
-import androidx.core.content.ContextCompat
-import com.empire_mammoth.myapplication.R
-import java.util.Date
 
 class TextCustomView(
     context: Context,
@@ -54,15 +47,13 @@ class TextCustomView(
         )
     }
 
-    public fun getDate() {
-        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-        val currentDate = sdf.format(Date())
-        text = currentDate.toString()
+    public fun clearText() {
+        text = ""
         invalidate()
     }
 
-    public fun clearText() {
-        text = ""
+    fun setText(nexText: String) {
+        text = nexText
         invalidate()
     }
 }

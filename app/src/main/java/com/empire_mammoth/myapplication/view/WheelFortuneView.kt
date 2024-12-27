@@ -9,7 +9,6 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -19,7 +18,7 @@ class WheelFortuneView(
     context: Context,
     attributeSet: AttributeSet
 ) : View(context, attributeSet) {
-    public var listener: Listener? = null
+    public var listener: RollListener? = null
     private val paint = Paint()
     private val paintBorder = Paint()
     private val paintButton = Paint()
@@ -39,11 +38,11 @@ class WheelFortuneView(
 
     private val angle = 360f / colors.size
     private var startAngle = 90f
-    private var scrollAngle = 0f
+    private var rollAngle = 0f
 
-    private var isScroll = false
-    private var indexScroll = 0
-    private val numberScrollingFrames = 100
+    private var isRoll = false
+    private var indexRoll = 0
+    private val numberRollingFrames = 100
 
     private var currentSector = 3
 
@@ -68,16 +67,16 @@ class WheelFortuneView(
         drawIndicator(canvas)
         drawCenter(canvas)
 
-        scrollContinue()
+        rollContinue()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                if (!isScroll) {
+                if (!isRoll) {
                     paintButton.color = Color.LTGRAY
-                    startScroll()
-                    listener?.onStart()
+                    startRoll()
+                    listener?.onStartRoll()
                     invalidate()
                 }
             }
@@ -94,26 +93,26 @@ class WheelFortuneView(
         val bundle = Bundle()
         bundle.putParcelable("superState", super.onSaveInstanceState())
         bundle.putFloat("startAngle", startAngle)
-        bundle.putFloat("scrollAngle", scrollAngle)
-        bundle.putBoolean("isScroll", isScroll)
-        bundle.putInt("indexScroll", indexScroll)
+        bundle.putFloat("rollAngle", rollAngle)
+        bundle.putBoolean("isRoll", isRoll)
+        bundle.putInt("indexRoll", indexRoll)
         bundle.putInt("currentSector", currentSector)
         return bundle
     }
 
     override fun onRestoreInstanceState(parcelable: Parcelable?) {
         var state: Parcelable? = parcelable
-        if (parcelable is Bundle)  // implicit null check
+        if (parcelable is Bundle)
         {
             val bundle = parcelable
             startAngle = bundle.getFloat("startAngle")
-            scrollAngle = bundle.getFloat("scrollAngle")
-            isScroll = bundle.getBoolean("isScroll")
-            indexScroll = bundle.getInt("indexScroll")
+            rollAngle = bundle.getFloat("rollAngle")
+            isRoll = bundle.getBoolean("isRoll")
+            indexRoll = bundle.getInt("indexRoll")
             currentSector = bundle.getInt("currentSector")
             state = bundle.getParcelable<Parcelable>("superState")
 
-            if (isScroll) listener?.onStart()
+            if (isRoll) listener?.onStartRoll()
         }
         super.onRestoreInstanceState(state)
     }
@@ -195,21 +194,21 @@ class WheelFortuneView(
         return bitmap
     }
 
-    private fun startScroll() {
+    private fun startRoll() {
         val randomVar = (1..colors.size).random()
         currentSector = (currentSector - randomVar + colors.size) % colors.size
-        scrollAngle = (720 + randomVar * angle) / numberScrollingFrames
-        isScroll = true
-        indexScroll = 0
+        rollAngle = (720 + randomVar * angle) / numberRollingFrames
+        isRoll = true
+        indexRoll = 0
     }
 
-    private fun scrollContinue() {
-        if (isScroll) {
-            startAngle += scrollAngle
-            indexScroll++
-            if (indexScroll >= numberScrollingFrames) {
-                isScroll = false
-                listener?.processingResults(currentSector)
+    private fun rollContinue() {
+        if (isRoll) {
+            startAngle += rollAngle
+            indexRoll++
+            if (indexRoll >= numberRollingFrames) {
+                isRoll = false
+                listener?.processingResults(colors[currentSector])
             }
             invalidate()
         }
@@ -220,8 +219,8 @@ class WheelFortuneView(
         invalidate()
     }
 
-    interface Listener {
-        fun onStart()
+    interface RollListener {
+        fun onStartRoll()
         fun processingResults(result: Int)
     }
 }

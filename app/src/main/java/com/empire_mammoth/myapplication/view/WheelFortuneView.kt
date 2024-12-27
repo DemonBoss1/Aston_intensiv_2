@@ -9,11 +9,11 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.empire_mammoth.myapplication.R
-
 
 class WheelFortuneView(
     context: Context,
@@ -24,6 +24,8 @@ class WheelFortuneView(
     private val paintBorder = Paint()
     private val paintButton = Paint()
     private val paintText = Paint()
+
+    private var scale = 0.75f
 
     private val colors = listOf(
         Color.RED,
@@ -119,10 +121,11 @@ class WheelFortuneView(
     private fun drawCenter(canvas: Canvas) {
         val centerX = width / 2f
         val centerY = height / 2f
-        val radius = width.coerceAtMost(height) / 6f
+        val radius = width.coerceAtMost(height) / 6f  * scale
         val text = "Start"
         val rect = Rect()
         paintText.textSize = radius / 4
+        paintText.textSize = radius/4  * scale
         paintText.getTextBounds(text, 0, text.length, rect)
 
         canvas.drawCircle(centerX, centerY, radius, paintButton)
@@ -138,7 +141,7 @@ class WheelFortuneView(
     private fun drawWheelDrum(canvas: Canvas) {
         val centerX = width / 2f
         val centerY = height / 2f
-        val radius = width.coerceAtMost(height) / 2f
+        val radius = width.coerceAtMost(height) / 2f  * scale
 
         colors.forEachIndexed { index, color ->
             paint.color = color
@@ -170,18 +173,18 @@ class WheelFortuneView(
         val bitmap = createBitmap()
 
         paint.color = Color.BLACK
-        canvas.drawBitmap(bitmap, centerX - height / 10, 0f, paint)
+        canvas.drawBitmap(bitmap, centerX - height / 10 * scale, 0f, paint)
     }
 
     private fun createBitmap(): Bitmap {
         val drawable = ContextCompat.getDrawable(context, R.drawable.baseline_arrow_drop_down_24)
         val bitmap = Bitmap.createBitmap(
-            height / 5,
-            height / 5,
+            (height / 5 * scale).toInt(),
+            (height / 5 * scale).toInt(),
             Bitmap.Config.ARGB_8888
         )
         val canvas = Canvas(bitmap)
-        drawable?.setBounds(0, 0, height / 5, height / 5)
+        drawable?.setBounds(0, 0, (height / 5 * scale).toInt(), (height / 5 * scale).toInt())
         drawable?.draw(canvas)
 
         return bitmap

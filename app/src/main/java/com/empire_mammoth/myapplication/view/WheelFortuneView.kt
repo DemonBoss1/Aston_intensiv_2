@@ -122,7 +122,7 @@ class WheelFortuneView(
         val centerX = width / 2f
         val centerY = height / 2f
         val radius = width.coerceAtMost(height) / 6f * scale
-        val text = "Start"
+        val text = "Start" + scale.toString()
         val rect = Rect()
         paintText.textSize = radius / 4
         paintText.textSize = radius / 4 * scale
@@ -173,7 +173,12 @@ class WheelFortuneView(
         val bitmap = createBitmap()
 
         paint.color = Color.BLACK
-        canvas.drawBitmap(bitmap, centerX - width / 10 * scale, height/2 - height/2 * scale, paint)
+        canvas.drawBitmap(
+            bitmap,
+            centerX - width / 10 * scale,
+            height / 2 - height / 2 * scale,
+            paint
+        )
     }
 
     private fun createBitmap(): Bitmap {
@@ -208,6 +213,11 @@ class WheelFortuneView(
             }
             invalidate()
         }
+    }
+
+    fun setScale(value: Float) {
+        scale = 0.5f + value / 2f
+        invalidate()
     }
 
     interface Listener {

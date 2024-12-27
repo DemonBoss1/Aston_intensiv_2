@@ -1,8 +1,10 @@
 package com.empire_mammoth.myapplication
 
+import android.media.MediaPlayer.OnSeekCompleteListener
 import android.os.Bundle
 import android.renderscript.ScriptGroup.Binding
 import android.view.View
+import android.widget.SeekBar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -26,7 +28,7 @@ class MainActivity : AppCompatActivity() {
             wheelFortuneView.listener = object : WheelFortuneView.Listener {
                 var isUse = true
                 override fun onStart() {
-                    if(isUse){
+                    if (isUse) {
                         Picasso.get()
                             .load("https://placebeard.it/$width" + "x$height")
                             .into(imageView)
@@ -41,10 +43,11 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun processingResults(result: Int) {
-                    when(result%2) {
-                        0-> {
+                    when (result % 2) {
+                        0 -> {
                             textCustomView.getDate()
                         }
+
                         1 -> {
                             isUse = true
 
@@ -61,6 +64,19 @@ class MainActivity : AppCompatActivity() {
                 imageView.visibility = View.GONE
 
             }
+
+            seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                private var value = 0.5f
+                override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+                    value = p1 / 100f
+                    wheelFortuneView.setScale(value)
+                }
+
+                override fun onStartTrackingTouch(p0: SeekBar?) {}
+
+                override fun onStopTrackingTouch(p0: SeekBar?) {}
+
+            })
         }
     }
 }

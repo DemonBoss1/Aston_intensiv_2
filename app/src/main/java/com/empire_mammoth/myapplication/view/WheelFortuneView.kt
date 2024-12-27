@@ -93,11 +93,11 @@ class WheelFortuneView(
     override fun onSaveInstanceState(): Parcelable {
         val bundle = Bundle()
         bundle.putParcelable("superState", super.onSaveInstanceState())
-        bundle.putFloat("startAngle",startAngle)
-        bundle.putFloat("scrollAngle",scrollAngle)
-        bundle.putBoolean("isScroll",isScroll)
-        bundle.putInt("indexScroll",indexScroll)
-        bundle.putInt("currentSector",currentSector)
+        bundle.putFloat("startAngle", startAngle)
+        bundle.putFloat("scrollAngle", scrollAngle)
+        bundle.putBoolean("isScroll", isScroll)
+        bundle.putInt("indexScroll", indexScroll)
+        bundle.putInt("currentSector", currentSector)
         return bundle
     }
 
@@ -113,7 +113,7 @@ class WheelFortuneView(
             currentSector = bundle.getInt("currentSector")
             state = bundle.getParcelable<Parcelable>("superState")
 
-            if(isScroll) listener?.onStart()
+            if (isScroll) listener?.onStart()
         }
         super.onRestoreInstanceState(state)
     }
@@ -121,11 +121,11 @@ class WheelFortuneView(
     private fun drawCenter(canvas: Canvas) {
         val centerX = width / 2f
         val centerY = height / 2f
-        val radius = width.coerceAtMost(height) / 6f  * scale
+        val radius = width.coerceAtMost(height) / 6f * scale
         val text = "Start"
         val rect = Rect()
         paintText.textSize = radius / 4
-        paintText.textSize = radius/4  * scale
+        paintText.textSize = radius / 4 * scale
         paintText.getTextBounds(text, 0, text.length, rect)
 
         canvas.drawCircle(centerX, centerY, radius, paintButton)
@@ -141,7 +141,7 @@ class WheelFortuneView(
     private fun drawWheelDrum(canvas: Canvas) {
         val centerX = width / 2f
         val centerY = height / 2f
-        val radius = width.coerceAtMost(height) / 2f  * scale
+        val radius = width.coerceAtMost(height) / 2f * scale
 
         colors.forEachIndexed { index, color ->
             paint.color = color
@@ -173,7 +173,7 @@ class WheelFortuneView(
         val bitmap = createBitmap()
 
         paint.color = Color.BLACK
-        canvas.drawBitmap(bitmap, centerX - height / 10 * scale, 0f, paint)
+        canvas.drawBitmap(bitmap, centerX - width / 10 * scale, height/2 - height/2 * scale, paint)
     }
 
     private fun createBitmap(): Bitmap {
@@ -202,7 +202,7 @@ class WheelFortuneView(
         if (isScroll) {
             startAngle += scrollAngle
             indexScroll++
-            if (indexScroll >= numberScrollingFrames){
+            if (indexScroll >= numberScrollingFrames) {
                 isScroll = false
                 listener?.processingResults(currentSector)
             }
